@@ -1,22 +1,67 @@
 // ==UserScript==
-// @name         XPS upc
+// @name         XPS Upcharge
 // @namespace    http://tampermonkey.net/
-// @version      0.1
+// @version      0.2
 // @author       Brighten Clark
 // @run-at       document-idle
 // @match        https://xpsshipper.com/ec/*
-// @icon         https://www.google.com/s2/favicons?domain=xpsshipper.com
-// @grant        window.onurlchange
+// @icon         https://wwwindow.google.com/s2/favicons?domain=xpsshipper.com
+// @grant        windowindow.onurlchange
+// @grant        GM.addStyle
 // @grant        GM.setValue
 // @grant        GM.getValue
 // ==/UserScript==
 
-const d = document;
-const w = window;
+GM.addStyle(`
+    #qa-upc-tab {
+        margin-left: 0;
+    }
 
-const currencies = { USD: '$' };
-const currency = currencies.USD;
-const valueAttr = 'value';
+    .upc-button-wrapper {
+        display: flex;
+        margin-top: .4em;
+        flex-direction: row
+    }
+
+    .upc-button {
+        border: 0;
+        background-color: rgba(0, 0, 0, 0);
+        color: white;
+        margin-right: 4px;
+        height: 100%;
+    }
+
+    .upc-dropdown {
+        display: none;
+        z-index: 1;
+        position: absolute;
+        top: 3.4rem;
+        background-color: white;
+        border: 1px solid #e8e4e4;
+        margin: 0;
+        padding: 0;
+    }
+
+    .upc-ul {
+        padding: 0;
+        list-style: none;
+    }
+
+    .upc-provider {
+        display: flex;
+        height: auto;
+        margin-top: 14px;
+    }
+
+    #upc-ups, #upc-usps, #upc-fedex, #upc-dhl {
+        height: 59%;
+    }
+
+    #span-ups, #span-usps, #span-fedex, #span-dhl {
+        padding-left: 8px;
+        margin-top: 6px;
+    }
+`);
 
 const upcHTML = `
 <li to="upc" id="qa-upc-tab">
@@ -24,7 +69,7 @@ const upcHTML = `
         <button class="upc-button">
             <i class="uk-icon-laptop uk-icon-medium"></i>
         </button>
-        <div class="dropdown-upc">
+        <div class="upc-dropdown">
             <ul class="upc-ul">
                 <li class="upc-provider">
                     <input id="upc-ups" type="text" maxlength="2" size="1">
@@ -47,70 +92,171 @@ const upcHTML = `
     </div>
 </li>`;
 
-const providers = {
-    sanger: {
-        ups: { name: 'ups', value: 0 },
-        usps: { name: 'usps', value: 0 },
-        fedex: { name: 'fedex', value: 0 },
-        dhl: { name: 'dhl', value: 0 }
-    },
-    fresno: {
-        ups: { name: 'ups', value: 0 },
-        usps: { name: 'usps', value: 0 },
-        fedex: { name: 'fedex', value: 0 },
-        dhl: { name: 'dhl', value: 0 }
-    },
-    clovis: {
-        ups: { name: 'ups', value: 0 },
-        usps: { name: 'usps', value: 0 },
-        fedex: { name: 'fedex', value: 0 },
-        dhl: { name: 'dhl', value: 0 }
-    },
+const pollDOM = () => {
+  let el = document.querySelector('.uk-width-2-10');
+
+  if (el) {
+    main();
+  } else {
+    el = document?.querySelector('.uk-width-2-10');
+    setTimeout(pollDOM, 300);
+  }
 };
 
-const pollDOM = () => {
-    let el = d.querySelector('#qa-address-book-tab');
+const getups = GM.getValue('ups');
+const getusps = GM.getValue('usps');
+const getfedex = GM.getValue('fedex');
+const getdhl = GM.getValue('dhl');
 
-    if (el) {
-        main();
-    } else {
-        el = d?.querySelector('#qa-address-book-tab');
-        setTimeout(pollDOM, 300);
-    }
-}
+const getProviders = Promise.all([getups, getusps, getfedex, getdhl]);
 
 const main = () => {
-    const invoices = d.querySelector('#qa-address-book-tab').nextSibling;
-    invoices.insertAdjacentHTML('afterend', upcHTML);
+  const invoices = document.querySelector('#qa-address-book-tab').nextSibling;
+  invoices.insertAdjacentHTML('afterend', upcHTML);
 
-    const toggleupc = () => {
-        const upcd = d.querySelector('.dropdown-upc').style.display
-        upcd = upcd === 'none' ? 'flex' : 'none';
-    };
-    const upcButton = d.querySelector('.upc-button');
-    upcButton.addEventListener('click', toggleupc);
+  const upcButton = document.querySelector('.upc-button');
+  const upcDropdown = document.querySelector('.upc-dropdown');
 
-    const quickQuote = d.querySelector('#qa-quick-quote-toggle');
+  upcButton.addEventListener('click', () => {
+    if (upcDropdown.style.display === 'none') {
+      upcDropdown.style.display = 'flex';
+    } else {
+      upcDropdown.style.display = 'none';
+    }
+  });
 
-    upcObserver.observe(d.body, { childList: true, subtree: true });
-    quickQuote.remove();
+  const upcUPS = document.querySelector('#upc-ups');
+  const upcUSPS = document.querySelector('#upc-usps');
+  const upcFedEx = document.querySelector('#upc-fedex');
+  const upcDHL = document.querySelector('#upc-dhl');
 
-    if (!w.onurlchange) w.addEventListener('urlchange', main);
+  const upcs = new Map([
+    ['ups', upcUPS],
+    ['usps', upcUSPS],
+    ['fedex', upcFedEx],
+    ['dhl', upcDHL],
+  ]);
+
+  getProviders.then((items) => {
+    const upsValue = items[0];
+    const uspsValue = items[1];
+    const fedexValue = items[2];
+    const dhlValue = items[3];
+
+    if (upsValue !== undefined) {
+      upcUPS.value = upsValue;
+    } else {
+      upcUPS.value = 0;
+    }
+
+    if (uspsValue !== undefined) {
+      upcUSPS.value = uspsValue;
+    } else {
+      upcUSPS.value = 0;
+    }
+
+    if (fedexValue !== undefined) {
+      upcFedEx.value = fedexValue;
+    } else {
+      upcUPS.value = 0;
+    }
+
+    if (dhlValue !== undefined) {
+      upcDHL.value = dhlValue;
+    } else {
+      upcDHL.value = 0;
+    }
+  });
+
+  const mutateRate = (rate) => {
+    console.log(rate);
+    if (rate.innerText.match(/[0-9]/)) {
+      let rateAttr = rate.getAttribute('value');
+      if (!rateAttr) {
+        const total = Number(rate.innerText.replace('$', ''));
+        rate.setAttribute('value', total);
+      }
+      rateAttr = rate.getAttribute('value');
+      let providerImg =
+        rate.parentElement.parentElement?.getElementsByTagName('img')[0];
+      if (!providerImg) {
+        providerImg =
+          rate.parentElement.parentElement.parentElement?.getElementsByTagName(
+            'img'
+          )[0];
+      }
+      const providerImgSrc = providerImg.getAttribute('src');
+      const provider = providerImgSrc.match(/\/([a-zA-Z]*?)\./)[1];
+      rate.innerText = `
+                $${(
+                  Number(rateAttr) +
+                  Number(rateAttr) * (upcs.get(provider).value / 100)
+                ).toFixed(2)}`;
+    }
+  };
+
+  const collectMutateRates = () => {
+    const rates = document.querySelectorAll('#total-rate');
+    for (const rate of rates) {
+      mutateRate(rate);
+    }
+  };
+
+  upcUPS.addEventListener('change', () => {
+    collectMutateRates();
+    GM.setValue('ups', upcUPS.value);
+    GM.setValue('usps', upcUSPS.value);
+    GM.setValue('fedex', upcFedEx.value);
+    GM.setValue('dhl', upcDHL.value);
+  });
+
+  upcUSPS.addEventListener('change', () => {
+    collectMutateRates();
+    GM.setValue('ups', upcUPS.value);
+    GM.setValue('usps', upcUSPS.value);
+    GM.setValue('fedex', upcFedEx.value);
+    GM.setValue('dhl', upcDHL.value);
+  });
+
+  upcFedEx.addEventListener('change', () => {
+    collectMutateRates();
+    GM.setValue('ups', upcUPS.value);
+    GM.setValue('usps', upcUSPS.value);
+    GM.setValue('fedex', upcFedEx.value);
+    GM.setValue('dhl', upcDHL.value);
+  });
+
+  upcDHL.addEventListener('change', () => {
+    collectMutateRates();
+    GM.setValue('ups', upcUPS.value);
+    GM.setValue('usps', upcUSPS.value);
+    GM.setValue('fedex', upcFedEx.value);
+    GM.setValue('dhl', upcDHL.value);
+  });
+
+  const quickQuote = document.querySelector('#qa-quick-quote-toggle');
+  quickQuote.remove();
+
+  const observerCallback = (mutations) => {
+    const rates = document.querySelectorAll('#total-rate');
+    upcObserver.disconnect();
+    for (const rate of rates) {
+      mutateRate(rate);
+    }
+    upcObserver.observe(document.querySelector('.uk-width-2-10'), config);
+  };
+
+  const upcObserver = new MutationObserver(observerCallback);
+
+  const config = {
+    characterData: true,
+    subtree: true,
+    childList: true,
+  };
+
+  upcObserver.observe(document.querySelector('.uk-width-2-10'), config);
+
+  if (!window.onurlchange) window.addEventListener('urlchange', main);
 };
-
-const getTotal = (rate) => Number(rate.innerText.replace(currency, ''))
-const setTotal = (rate) => {
-    rate.innerText = currency + getValue(valueAttr) + " :)";
-};
-
-const getValue = (rate) => rate.getAttribute(valueAttr);
-const setValue = (rate) => rate.setAttribute(valueAttr, getTotal(rate));
-const mutateValue = (rate) => getValue(rate) ? setTotal(rate) : setValue(rate);
-const injectupc = (mutations => {
-    const rates = async () => await getAllEl('#total-rate');
-    for (const rate in rates) mutateValue(rate);
-});
-
-const upcObserver = new MutationObserver(injectupc);
 
 pollDOM();
