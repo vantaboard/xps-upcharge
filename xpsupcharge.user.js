@@ -1,8 +1,7 @@
 // ==UserScript==
-// @name         XPS Upcharge
+// @name         XPS upc
 // @namespace    http://tampermonkey.net/
 // @version      0.1
-// @description
 // @author       Brighten Clark
 // @run-at       document-idle
 // @match        https://xpsshipper.com/ec/*
@@ -12,136 +11,106 @@
 // @grant        GM.getValue
 // ==/UserScript==
 
-const upchargeHTML = `
-<li to="upcharge" id="qa-upcharge-tab" style="margin-left: 0;">
-  <div style="display: flex;
-    margin-top: .4em;
-    flex-direction: row">
-    <button class="upcharge-button" onClick="toggleUpcharge()" style="border: 0;
-      background-color: rgba(0,0,0,0);
-      color: white;
-      margin-right: 4px;
-      height: 100%;">
-      <i class="uk-icon-laptop uk-icon-medium"></i>
-    </button>
-    <div class="dropdown-upcharge" style="display: none;z-index: 1;position: absolute;top: 3.4rem;background-color: white;border: 1px solid #e8e4e4; margin: 0; padding: 0;">
-      <ul class="upcharge-ul" style="padding: 0; list-style: none;">
-        <div class="upcharge-providers">
-          <li class="upcharge-provider" style="display: flex; height: auto">
-            <input id="ups" type="text" maxlength="2" size="1">
-            <span class="upcharge-ups" style="padding-left: 2px">UPS</span>
-          </li>
-          <li class="upcharge-provider" style="display: flex; height: auto">
-            <input id="usps" type="text" maxlength="2" size="1">
-            <span class="upcharge-usps" style="padding-left: 2px">USPS</span>
-          </li>
-          <li class="upcharge-provider" style="display: flex; height: auto">
-            <input id="FedEx" type="text" maxlength="2" size="1">
-            <span class="upcharge-fedex" style="padding-left: 2px">FedEx</span>
-          </li>
-          <li class="upcharge-provider" style="display: flex; height: auto">
-            <input id="dhl" type="text" maxlength="2" size="1">
-            <span class="upcharge-dhl" style="padding-left: 2px">DHL</span>
-          </li>
+const d = document;
+const w = window;
+
+const currencies = { USD: '$' };
+const currency = currencies.USD;
+const valueAttr = 'value';
+
+const upcHTML = `
+<li to="upc" id="qa-upc-tab">
+    <div class="upc-button-wrapper">
+        <button class="upc-button">
+            <i class="uk-icon-laptop uk-icon-medium"></i>
+        </button>
+        <div class="dropdown-upc">
+            <ul class="upc-ul">
+                <li class="upc-provider">
+                    <input id="upc-ups" type="text" maxlength="2" size="1">
+                    <span id="span-ups">UPS</span>
+                </li>
+                <li class="upc-provider">
+                    <input id="upc-usps" type="text" maxlength="2" size="1">
+                    <span id="span-usps">USPS</span>
+                </li>
+                <li class="upc-provider">
+                    <input id="upc-fedex" type="text" maxlength="2" size="1">
+                    <span id="span-fedex">FedEx</span>
+                </li>
+                <li class="upc-provider">
+                    <input id="upc-dhl" type="text" maxlength="2" size="1">
+                    <span id="span-dhl">DHL</span>
+                </li>
+            </ul>
         </div>
-      </ul>
     </div>
-  </div>
-</li>
+</li>`;
 
-`;
+const providers = {
+    sanger: {
+        ups: { name: 'ups', value: 0 },
+        usps: { name: 'usps', value: 0 },
+        fedex: { name: 'fedex', value: 0 },
+        dhl: { name: 'dhl', value: 0 }
+    },
+    fresno: {
+        ups: { name: 'ups', value: 0 },
+        usps: { name: 'usps', value: 0 },
+        fedex: { name: 'fedex', value: 0 },
+        dhl: { name: 'dhl', value: 0 }
+    },
+    clovis: {
+        ups: { name: 'ups', value: 0 },
+        usps: { name: 'usps', value: 0 },
+        fedex: { name: 'fedex', value: 0 },
+        dhl: { name: 'dhl', value: 0 }
+    },
+};
 
-const locations = ['sanger1', 'fresno1', 'clovis1'];
-const providers = ['dhl', 'ups', 'usps', 'fedex'];
-let lp = [];
+const pollDOM = () => {
+    let el = d.querySelector('#qa-address-book-tab');
 
-for (let location of locations) {
-    for (let provider of providers) {
-        lp.push({ location, provider });
-    }
-}
-
-(async () => {
-    await GM.setValue('count', 0);
-})();
-
-function pollDOM() {
-    let el = document.querySelector('.uk-margin');
-
-    if (el !== null) {
-        fetchMutations();
+    if (el) {
+        main();
     } else {
-        el = document?.querySelector('.uk-margin');
+        el = d?.querySelector('#qa-address-book-tab');
         setTimeout(pollDOM, 300);
     }
 }
 
-const fetchMutations = () => {
-    console.log('fetchmuteentered');
-    let mPar = document.getElementsByClassName(
-        'uk-width-2-10 uk-margin-large-bottom'
-    )[0];
+const main = () => {
+    const invoices = d.querySelector('#qa-address-book-tab').nextSibling;
+    invoices.insertAdjacentHTML('afterend', upcHTML);
 
-    let options = {
-        childList: true,
-        subtree: true,
+    const toggleupc = () => {
+        const upcd = d.querySelector('.dropdown-upc').style.display
+        upcd = upcd === 'none' ? 'flex' : 'none';
     };
+    const upcButton = d.querySelector('.upc-button');
+    upcButton.addEventListener('click', toggleupc);
 
-    const observer = new MutationObserver(mCallback);
+    const quickQuote = d.querySelector('#qa-quick-quote-toggle');
 
-    const addressBook = document.getElementById('qa-address-book-tab');
-    const invoices = addressBook.nextSibling;
-    invoices.insertAdjacentHTML('afterend', upchargeHTML);
-    const upcharge = document.getElementsByClassName('dropdown-upcharge')[0];
-    const upchargeButton = document.getElementsByClassName('upcharge-button')[0];
-
-    const quickQuote = document.querySelector('#qa-quick-quote-toggle');
+    upcObserver.observe(d.body, { childList: true, subtree: true });
     quickQuote.remove();
 
-    upchargeButton.addEventListener('click', () => {
-        if (upcharge.style.display === 'none') {
-            upcharge.style.display = 'flex';
-        } else {
-            upcharge.style.display = 'none';
-        }
-    });
-
-    const upchargePercent = 0.65;
-
-    function mCallback(mutations) {
-        console.log('mutation triggered');
-        for (let mutation of mutations) {
-            if (mutation.type === 'childList') {
-                for (let i = 0, length = mutation.addedNodes.length; i < length; i++) {
-                    let addedNode = mutation.addedNodes[i];
-                    if (addedNode.data?.match('react-empty')) {
-                        addedNode = addedNode.parentElement;
-                    }
-                    console.log(addedNode);
-                    if (addedNode.querySelector('#total-rate')) {
-                        const inText = Number(
-                            String(addedNode.querySelector('#total-rate').innerText).replace(
-                                '$',
-                                ''
-                            )
-                        );
-                        addedNode.querySelector('#total-rate').innerText = `$${(
-                            inText +
-                            inText * upchargePercent
-                        ).toFixed(2)}`;
-                    }
-                }
-            }
-        }
-    }
-
-    observer.observe(mPar, options);
-
-    if (window.onurlchange === null) {
-        window.addEventListener('urlchange', (info) => {
-            fetchMutations();
-        });
-    }
+    if (!w.onurlchange) w.addEventListener('urlchange', main);
 };
+
+const getTotal = (rate) => Number(rate.innerText.replace(currency, ''))
+const setTotal = (rate) => {
+    rate.innerText = currency + getValue(valueAttr) + " :)";
+};
+
+const getValue = (rate) => rate.getAttribute(valueAttr);
+const setValue = (rate) => rate.setAttribute(valueAttr, getTotal(rate));
+const mutateValue = (rate) => getValue(rate) ? setTotal(rate) : setValue(rate);
+const injectupc = (mutations => {
+    const rates = async () => await getAllEl('#total-rate');
+    for (const rate in rates) mutateValue(rate);
+});
+
+const upcObserver = new MutationObserver(injectupc);
 
 pollDOM();
