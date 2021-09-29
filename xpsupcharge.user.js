@@ -1,15 +1,18 @@
 // ==UserScript==
-// @name         XPS Upcharge
-// @namespace    http://tampermonkey.net/
-// @version      0.2
-// @author       Brighten Clark
-// @run-at       document-idle
-// @match        https://xpsshipper.com/ec/*
-// @icon         https://wwwindow.google.com/s2/favicons?domain=xpsshipper.com
-// @grant        windowindow.onurlchange
-// @grant        GM.addStyle
-// @grant        GM.setValue
-// @grant        GM.getValue
+// @name        XPS Upcharge
+// @namespace   http://tampermonkey.net/
+// @run-at      document-idle
+// @match       https://xpsshipper.com/ec/*
+// @icon        https://xpsshipper.com/ec/static/images/client/xps/xps-favicon.png
+// @updateURL   https://github.com/blackboardd/xps-upcharge/raw/main/script/xpsupcharge.user.js
+// @downloadURL https://github.com/blackboardd/xps-upcharge/raw/main/script/xpsupcharge.user.js
+// @version     0.0.8
+// @author      blackboardd <86866786+blackboardd@users.noreply.github.com>
+// @license     MIT
+// @grant       windowindow.onurlchange
+// @grant       GM.addStyle
+// @grant       GM.setValue
+// @grant       GM.getValue
 // ==/UserScript==
 
 GM.addStyle(`
