@@ -4,8 +4,8 @@
 // @run-at      document-idle
 // @match       https://xpsshipper.com/ec/*
 // @icon        https://xpsshipper.com/ec/static/images/client/xps/xps-favicon.png
-// @updateURL   https://github.com/blackboardd/xps-upcharge/raw/main/script/xpsupcharge.user.js
-// @downloadURL https://github.com/blackboardd/xps-upcharge/raw/main/script/xpsupcharge.user.js
+// @updateURL   https://github.com/blackboardd/xps-upcharge/raw/main/xpsupcharge.user.js
+// @downloadURL https://github.com/blackboardd/xps-upcharge/raw/main/xpsupcharge.user.js
 // @version     0.0.8
 // @author      blackboardd <86866786+blackboardd@users.noreply.github.com>
 // @license     MIT
