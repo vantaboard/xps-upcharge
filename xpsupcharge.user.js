@@ -6,7 +6,7 @@
 // @icon        https://xpsshipper.com/ec/static/images/client/xps/xps-favicon.png
 // @updateURL   https://github.com/blackboardd/xps-upcharge/raw/main/xpsupcharge.user.js
 // @downloadURL https://github.com/blackboardd/xps-upcharge/raw/main/xpsupcharge.user.js
-// @version     0.0.8
+// @version     0.0.9
 // @author      blackboardd <86866786+blackboardd@users.noreply.github.com>
 // @license     MIT
 // @grant       windowindow.onurlchange
@@ -32,6 +32,17 @@ GM.addStyle(`
         color: white;
         margin-right: 4px;
         height: 100%;
+        cursor: pointer;
+        -webkit-transition: color .5s ease-in;
+        -moz-transition: color .5s ease-in;
+        -o-transition: color .5s ease-in;
+    }
+
+    .upc-button:hover {
+       color: #d9d9d9;
+        -webkit-transition: color .5s ease-in;
+        -moz-transition: color .5s ease-in;
+        -o-transition: color .5s ease-in;
     }
 
     .upc-dropdown {
@@ -43,6 +54,8 @@ GM.addStyle(`
         border: 1px solid #e8e4e4;
         margin: 0;
         padding: 0;
+        position: absolute;
+        left: -2.5rem;
     }
 
     .upc-ul {
@@ -128,6 +141,30 @@ const main = () => {
     }
   });
 
+  let upcTab = document.querySelector('#qa-upc-tab');
+  let classNames = [];
+  let ids = [];
+  for (const node of upcTab.querySelectorAll('*')) {
+    if (node.className) classNames.push(node.className);
+    if (node.id) ids.push(node.id);
+  }
+  document.onclick = function (e) {
+    const hasClassNames = classNames.reduce(
+      (sum, next) => sum || next === e.target.className,
+      false
+    );
+    const hasIds = ids.reduce(
+      (sum, next) => sum || next === e.target.id,
+      false
+    );
+    console.log(classNames);
+    console.log(ids);
+    console.log(hasClassNames);
+    console.log(hasIds);
+
+    if (!hasClassNames && !hasIds) upcDropdown.style.display = 'none';
+  };
+
   const upcUPS = document.querySelector('#upc-ups');
   const upcUSPS = document.querySelector('#upc-usps');
   const upcFedEx = document.querySelector('#upc-fedex');
@@ -178,8 +215,14 @@ const main = () => {
       if (!rateAttr) {
         const total = Number(rate.innerText.replace('$', ''));
         rate.setAttribute('value', total);
+        rate.style.transition = 'transform 0.08s ease-in-out';
       }
       rateAttr = rate.getAttribute('value');
+      rate.style.transform = 'rotate3d(1,0,0,90deg)';
+      const int = setInterval(() => {
+        rate.style.transform = 'unset';
+        clearInterval(int);
+      }, 100);
       let providerImg =
         rate.parentElement.parentElement?.getElementsByTagName('img')[0];
       if (!providerImg) {
