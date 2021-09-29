@@ -9,8 +9,8 @@
 
 Step 1 (skip if you already have the extension):
 
-- Install [Tampermonkey](https://www.tampermonkey.net/)
-- or [Greasemonkey](https://www.greasespot.net/)
+- Install [Tampermonkey <img src=".ghimages/icons/tampermonkey/icon180.png" alt="tampermonkey" height="10"/>](https://www.tampermonkey.net/)
+- or [Greasemonkey <img src=".ghimages/icons/greasemonkey/favicon.ico" alt="greasemonkey" height="10"/>](https://www.greasespot.net/)
 
 Step 2:
 
