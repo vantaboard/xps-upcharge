@@ -1,6 +1,6 @@
 # XPS Upcharge Userscript
 
-![demonstration](./ghimages/gifs/demonstration.gif)
+![demonstration](.ghimages/gifs/demonstration.gif)
 
 ## 👠 Features
 
