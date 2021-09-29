@@ -1,5 +1,7 @@
 # XPS Upcharge Userscript
 
+![demonstration](.ghimages\gifs\demonstration.gif)
+
 ## 👠 Features
 
 - Uses GM/TM database
