@@ -19,7 +19,7 @@ Step 2:
 
 ### 🧑‍🤝‍🧑 Contributing
 
-To contribute to this project, make a pull request to <https://github.com/blackboardd/xps-upcharge-tab>.
+To contribute to this project, make a pull request to <https://github.com/blackboardd/xps-upcharge>.
 
 ### ⚖️ License
 
