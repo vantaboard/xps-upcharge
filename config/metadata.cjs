@@ -1,14 +1,17 @@
 const { author, dependencies, repository, version } = require('../package.json')
 
 module.exports = {
-  name: 'webpack-userscript-template',
-  namespace: 'https://trim21.me/',
+  name: 'XPS Upcharge',
+  namespace: 'https://brightentompkins.com/',
   version: version,
   author: author,
   source: repository.url,
-  // 'license': 'MIT',
+  'license': 'MIT',
   match: [
-    'http://www.example.com/*'
+    'http://www.xpsshipper.com/ec/*'
+  ],
+  icon: [
+    'https://xpsshipper.com/ec/static/images/client/xps/xps-favicon.png'
   ],
   require: [
     `https://cdn.jsdelivr.net/npm/jquery@${dependencies.jquery}/dist/jquery.min.js`,
@@ -16,7 +19,11 @@ module.exports = {
     `https://cdn.jsdelivr.net/npm/axios-userscript-adapter@${dependencies['axios-userscript-adapter']}/dist/axiosGmxhrAdapter.min.js`,
   ],
   grant: [
-    'GM.xmlHttpRequest'
+    'window.onurlchange',
+    'GM.xmlHttpRequest',
+    'GM.addStyle',
+    'GM.setValue',
+    'GM.getValue'
   ],
   connect: [
     'httpbin.org'
