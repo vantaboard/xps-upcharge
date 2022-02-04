@@ -6,3 +6,9 @@ node_modules
 
 # Log files
 *.log
+
+# vs code settings
+.vscode
+
+# distribution
+dist
