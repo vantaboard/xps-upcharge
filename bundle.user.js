@@ -8,7 +8,7 @@
 // @require   https://unpkg.com/react-dom@17/umd/react-dom.development.js
 // @icon      https://xpsshipper.com/ec/static/images/client/xps/xps-favicon.png
 // @match     https://xpsshipper.com/*
-// @version   2.0.0
+// @version   2.0.1
 // @homepage  https://github.com/blackboardd/xps-upcharge#readme
 // @grant     GM.setValue
 // @grant     GM.getValue
@@ -8483,6 +8483,9 @@ function checkDCE() {
 
 var ReactDOM = reactDom.exports;
 
+/**
+ * Array containing all UPC identifiers.
+ */
 const upcs = ['UPS', 'USPS', 'FedEx', 'DHL'];
 
 var reactIs$2 = {exports: {}};
@@ -10270,6 +10273,7 @@ var qe = function (e) {
 });
 var styled = qe;
 
+/** Contains all styling for the tab component. */
 const StyledTabItem = styled.li `
   margin-left: 0;
 `;
@@ -10323,11 +10327,22 @@ const StyledDropdown = styled.div `
   left: -3.75rem;
 `;
 
+/**
+ * Button component.
+ *
+ * @returns {JSX.Element} The button component.
+ */
 const Button = () => {
     return (react.exports.createElement(StyledButton, { className: "upc-button" },
         react.exports.createElement("i", { className: "uk-icon-laptop uk-icon-medium" })));
 };
 
+/**
+ * The input component which provides an input for the upcharge percentages.
+ *
+ * @param {IInputProps} props The props for the input component.
+ * @returns {JSX.Element} The input component.
+ */
 const Input = (props) => {
     const { name } = props;
     const id = name.toLowerCase();
@@ -10336,11 +10351,21 @@ const Input = (props) => {
         react.exports.createElement(Name, { id: id }, name)));
 };
 
+/**
+ * Dropdown component.
+ *
+ * @returns {JSX.Element} The dropdown component.
+ */
 const Dropdown = () => {
     return (react.exports.createElement(StyledDropdown, { className: "upc-dropdown" },
         react.exports.createElement(List, { className: "upc-ul" }, upcs.map((input) => (react.exports.createElement(Input, { key: input, name: input }))))));
 };
 
+/**
+ * UPC tab component.
+ *
+ * @returns {JSX.Element} The UPC tab component.
+ */
 const Tab = () => {
     return (react.exports.createElement(StyledTabItem, { id: "qa-upc-tab" },
         react.exports.createElement(ButtonDropdownWrapper, { className: "upc-button-wrapper" },
@@ -10348,16 +10373,43 @@ const Tab = () => {
             react.exports.createElement(Dropdown, null))));
 };
 
+/**
+ * Handles click events on the document for the UPC dropdown menu.
+ *
+ * @param {HTMLElement} dropdown
+ *
+ * @returns {(e: MouseEvent) => void}
+ */
 const DocumentClickHandler = (dropdown) => {
+    /**
+     * Element for the dropdown menu.
+     */
     const upcTab = document.querySelector('#qa-upc-tab');
+    /**
+     * Class names for the dropdown menu.
+     */
     const classNames = [];
+    /**
+     * IDs for the dropdown menu.
+     */
     const ids = [];
+    /**
+     * Loops through the dropdown menu's class names and IDs
+     * and pushes them to the classNames and ids arrays.
+     */
     for (const node of upcTab.querySelectorAll('*')) {
         if (node.className)
             classNames.push(node.className);
         if (node.id)
             ids.push(node.id);
     }
+    /**
+     * Start of the click event handler.
+     *
+     * This function compares all actively clicked target class names and IDs
+     * to the classNames and ids arrays. If the target class name or ID is found
+     * in the classNames or ids arrays, the dropdown menu is hidden.
+     */
     return (e) => {
         const target = e.target;
         const reducer = (target) => (sum, next) => sum || next === target;
@@ -10368,6 +10420,11 @@ const DocumentClickHandler = (dropdown) => {
     };
 };
 
+/**
+ * Gets the UPC map by constructing it from the UPC data.
+ *
+ * @returns {Map<string, HTMLInputElement>}
+ */
 const getUPCMap = () => {
     const upcMap = new Map();
     upcs.forEach((upc) => {
@@ -10376,6 +10433,12 @@ const getUPCMap = () => {
     return upcMap;
 };
 
+/**
+ *  Gets the UPC map by constructing it from
+ *  the rate element image src attribute.
+ *
+ *  @param {HTMLElement} rate
+ */
 const getProvider = (rate) => {
     const img = rate.parentElement.parentElement?.getElementsByTagName('img')[0] ||
         rate.parentElement.parentElement.parentElement?.getElementsByTagName('img')[0];
@@ -10383,9 +10446,22 @@ const getProvider = (rate) => {
     return imgSrc.match(/\/([a-zA-Z]*?)\./)[1];
 };
 
+/**
+ * Checks whether or not the rate's inner text is a number.
+ *
+ * @param {HTMLElement} rate
+ * @returns {boolean}
+ */
 const isNumber = (rate) => {
     return Boolean(rate.innerText.match(/[0-9]/));
 };
+/**
+ * Gets the value attribute of the rate if it exists and returns it.
+ * If it doesn't exist, the attribute is set to the inner text.
+ *
+ * @param {HTMLElement} rate
+ * @returns {number}
+ */
 const getValue = (rate) => {
     if (!rate.getAttribute('value')) {
         const total = Number(rate.innerText.replace('$', ''));
@@ -10393,6 +10469,14 @@ const getValue = (rate) => {
     }
     return Number(rate.getAttribute('value'));
 };
+/**
+ * Sets the inner text of the rate to a modified value based on the upcharge
+ * percentage from the UPC dropdown menu.
+ *
+ * @param {HTMLElement} rate
+ * @param {number} value
+ * @returns {void}
+ */
 const setInnerText = (rate, value) => {
     const upcMap = getUPCMap();
     rate.innerText = `
@@ -10400,27 +10484,51 @@ const setInnerText = (rate, value) => {
   `;
 };
 
+/**
+ * The element to observe for changes to the total rates.
+ */
 const elToObserve = '.uk-width-2-10';
+/**
+ * Mutation observer configuration.
+ */
 const config = {
     characterData: true,
     subtree: true,
     childList: true,
 };
+/**
+ * Mutation observer for the total rates.
+ */
 const observer = new MutationObserver(() => {
     observer.disconnect();
     collectMutateRates();
     observer.observe(document.querySelector(elToObserve), config);
 });
+/**
+ * Mutates the rates based on the upcharge percentages in the UPC dropdown.
+ *
+ * @param {HTMLElement} rate
+ * @returns {void}
+ */
 const mutateRate = (rate) => {
     if (isNumber(rate))
         setInnerText(rate, getValue(rate));
 };
+/**
+ * Collects rates from the DOM and mutates them.
+ *
+ * @returns {void}
+ */
 const collectMutateRates = () => {
     for (const rate of document.querySelectorAll('#total-rate')) {
         mutateRate(rate);
     }
 };
 
+/**
+ * Click event for UPC button that puts it
+ * into view on click, otherwise it is hidden.
+ */
 const ClickHandler = (dropdown) => {
     return () => {
         if (dropdown.style.display === '') {
@@ -10432,24 +10540,58 @@ const ClickHandler = (dropdown) => {
     };
 };
 
+/**
+ * This is the main entry point for the userscript.
+ * It will be called when the page is loaded.
+ * It will also be called when the page is refreshed.
+ *
+ * @returns {void}
+ */
 const Inject = () => {
-    document.querySelector('#qa-quick-quote-toggle').remove();
+    /**
+     * Address tab to insert html for UPC tab.
+     */
     const addressTab = document.querySelector('#qa-address-book-tab')
         .nextSibling;
+    /**
+     * Insert UPC tab after address tab.
+     */
     addressTab.insertAdjacentHTML('afterend', '<div id="qa-upc-tab"></div>');
+    /**
+     * Render UPC tab.
+     */
     ReactDOM.render(React.createElement(Tab, null), document.querySelector('#qa-upc-tab'));
+    /**
+     * Add click handler to UPC tab.
+     */
     document
         .querySelector('.upc-button')
         .addEventListener('click', ClickHandler(document.querySelector('.upc-dropdown')));
+    /**
+     * Add click handler to document to watch for clicking off UPC dropdown.
+     */
     document.onclick = DocumentClickHandler(document.querySelector('.upc-dropdown'));
+    /**
+     * Map of UPCs to their corresponding html input elements.
+     */
     const upcMap = getUPCMap();
+    /**
+     * Upcharge percentages for each UPC from GreaseMonkey API.
+     */
     const values = upcs.map((upc) => GM.getValue(upc.toLowerCase(), 0));
+    /**
+     * Loop through each UPC input element and set its value.
+     */
     values.forEach((value, index) => {
         value.then((value) => {
             const upcl = upcs[index].toLowerCase();
             upcMap[upcl].value = value;
         });
     });
+    /**
+     * Set up a change listener for each UPC input element which will
+     * update the GreaseMonkey API with the new upcharge percentage.
+     */
     for (const upc of upcs) {
         const upcl = upc.toLowerCase();
         upcMap[upcl].addEventListener('change', () => {
@@ -10457,19 +10599,34 @@ const Inject = () => {
             GM.setValue(upcl, upcMap[upcl].value);
         });
     }
+    /**
+     * Begin observing the page for mutations and
+     * change the rate based on those mutations.
+     */
     observer.observe(document.querySelector(elToObserve), config);
 };
 
+/**
+ * Polls the DOM to see if a particular element exists or not.
+ *
+ * @returns {void}
+ */
 const pollDOM = () => {
-    let el = document.querySelector('.uk-width-2-10');
+    let el = document.querySelector(elToObserve);
     if (el) {
         Inject();
     }
     else {
-        el = document.querySelector('.uk-width-2-10');
+        el = document.querySelector(elToObserve);
         setTimeout(pollDOM, 300);
     }
 };
+
+/**
+ * This is the main entry point for the application.
+ * This polls the DOM to check whether the userscript
+ * is ready to be injected.
+ */
 
 pollDOM();
 //# sourceMappingURL=bundle.user.js.map
