@@ -1,3 +1,5 @@
+// Contains all styling for the tab component.
+
 import styled from 'styled-components';
 
 export const StyledTabItem = styled.li`
