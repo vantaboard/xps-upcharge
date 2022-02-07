@@ -1,3 +1,4 @@
+import { setupResidential } from './options';
 import { getValue, isNumber, setInnerText } from './rate';
 
 /**
@@ -6,21 +7,44 @@ import { getValue, isNumber, setInnerText } from './rate';
 export const elToObserve = '.main-container';
 
 /**
+ * The element to observe for changes to the residential checkbox.
+ */
+export const residentialQuery = '#qa-residential-checkbox';
+
+/**
  * Mutation observer configuration.
  */
-export const config = {
+export const residentialConfig = {
   characterData: true,
   subtree: true,
   childList: true,
 };
 
 /**
+ * Mutation observer configuration.
+ */
+export const rateConfig = {
+  characterData: true,
+  subtree: true,
+  childList: true,
+};
+
+/**
+ * Mutation observer for the residential checkbox.
+ */
+export const residentialObserver: MutationObserver = new MutationObserver(
+  () => {
+    setupResidential();
+  }
+);
+
+/**
  * Mutation observer for the total rates.
  */
-export const observer: MutationObserver = new MutationObserver(() => {
-  observer.disconnect();
+export const rateObserver: MutationObserver = new MutationObserver(() => {
+  rateObserver.disconnect();
   collectMutateRates();
-  observer.observe(document.querySelector(elToObserve), config);
+  rateObserver.observe(document.querySelector(elToObserve), rateConfig);
 });
 
 /**

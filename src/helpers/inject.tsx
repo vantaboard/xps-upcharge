@@ -3,21 +3,29 @@ import ReactDOM from 'react-dom';
 import { upcs } from '../data/upcs';
 import Modal from '../features/components/options/modal';
 import Button from '../features/components/tab';
-import { DocumentClickHandler } from './document';
+import { documentClickHandler } from './document';
 import getUPCMap from './getUPCMap';
 import { setupModal } from './modal';
-import { collectMutateRates, config, elToObserve, observer } from './mutation';
+import {
+  collectMutateRates,
+  elToObserve,
+  rateConfig,
+  rateObserver,
+  residentialConfig,
+  residentialObserver,
+  residentialQuery,
+} from './mutation';
 import { setupResidential } from './options';
-import { ClickHandler } from './upcButton';
+import { clickHandler } from './upcButton';
 
 /**
  * This is the main entry point for the userscript.
- * It will be called when the page is loaded.
- * It will also be called when the page is refreshed.
+ * It will be called when the page with a residential checkbox
+ * is loaded. It will also be called when the page is refreshed.
  *
  * @returns {void}
  */
-export const Inject: () => void = (): void => {
+export const injectRate: () => void = (): void => {
   /**
    * Address tab to insert html for UPC tab.
    */
@@ -45,9 +53,6 @@ export const Inject: () => void = (): void => {
   // Set up modal.
   setupModal();
 
-  // Set up residential.
-  setupResidential();
-
   /**
    * Add click handler to UPC tab.
    */
@@ -55,13 +60,13 @@ export const Inject: () => void = (): void => {
     .querySelector('.upc-button')
     .addEventListener(
       'click',
-      ClickHandler(document.querySelector('.upc-dropdown'))
+      clickHandler(document.querySelector('.upc-dropdown'))
     );
 
   /**
    * Add click handler to document to watch for clicking off UPC dropdown.
    */
-  document.onclick = DocumentClickHandler(
+  document.onclick = documentClickHandler(
     document.querySelector('.upc-dropdown')
   );
 
@@ -102,7 +107,26 @@ export const Inject: () => void = (): void => {
    * Begin observing the page for mutations and
    * change the rate based on those mutations.
    */
-  observer.observe(document.querySelector(elToObserve), config);
+  rateObserver.observe(document.querySelector(elToObserve), rateConfig);
 };
 
-export default Inject;
+/**
+ * This is the main entry point for the userscript.
+ * It will be called when any page with rates is loaded.
+ * It will also be called when the page is refreshed.
+ *
+ * @returns {void}
+ */
+export const injectResidential: () => void = (): void => {
+  // Set up residential.
+  setupResidential();
+
+  /**
+   * Begin observing the page for mutations of the residential checkbox
+   * and setup the checkbox based on those mutations.
+   */
+  residentialObserver.observe(
+    document.querySelector(residentialQuery),
+    residentialConfig
+  );
+};
