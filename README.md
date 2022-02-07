@@ -24,7 +24,7 @@ Step 1 (skip if you already have the extension):
 Step 2:
 
 - Install the script by clicking the link below
-  <https://github.com/blackboardd/xps-upcharge/raw/main/xpsupcharge.user.js>
+  <https://github.com/blackboardd/xps-upcharge/raw/release/dist/xpsupcharge.user.js>
 
 ## 🧑‍🤝‍🧑 Contributing
 

@@ -14,11 +14,8 @@ export const observer = new MutationObserver((mutations: MutationRecord[]) => {
   observer.observe(document.querySelector(elToObserve), config);
 });
 
-export const mutateRate: (rate: HTMLElement) =>
-  void = (rate: HTMLElement) => {
-  if (isNumber(rate)) {
-    setInnerText(rate, getValue(rate));
-  }
+export const mutateRate: (rate: HTMLElement) => void = (rate: HTMLElement) => {
+  if (isNumber(rate)) setInnerText(rate, getValue(rate));
 };
 
 export const collectMutateRates: () => void = () => {
