@@ -10,7 +10,7 @@
 // @downloadURL https://github.com/blackboardd/xps-upcharge/raw/release/bundle.user.js
 // @icon        https://xpsshipper.com/ec/static/images/client/xps/xps-favicon.png
 // @match       https://xpsshipper.com/*
-// @version     2.0.2
+// @version     2.1.1
 // @homepage    https://github.com/blackboardd/xps-upcharge#readme
 // @grant       GM.setValue
 // @grant       GM.getValue
@@ -10275,6 +10275,67 @@ var qe = function (e) {
 });
 var styled = qe;
 
+/** Contains all styling for the modal component. */
+const StyledModal = styled.div `
+  display: none;
+  position: fixed;
+  z-index: 1;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: black;
+  background-color: rgba(0, 0, 0, 0.4);
+`;
+const ModalContent = styled.div `
+  background-color: #fefefe;
+  margin: 15% auto;
+  padding: 20px;
+  border: 1px solid #888;
+  width: 40%;
+`;
+const Close = styled.span `
+  color: #aaa;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+
+  &:hover,
+  &:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+  }
+`;
+const Checkbox = styled.input `
+  margin-right: 8px;
+`;
+
+/**
+ * Content component.
+ *
+ * @returns {JSX.Element} The content component.
+ */
+const Content = () => {
+    return (React.createElement("div", null,
+        React.createElement("label", { htmlFor: "options-residential" },
+            React.createElement(Checkbox, { type: "checkbox", id: "options-residential" }),
+            "Residential checked by default.")));
+};
+
+/**
+ * Modal component.
+ *
+ * @returns {JSX.Element} The modal component.
+ */
+const Modal = () => {
+    return (react.exports.createElement(StyledModal, { id: "options-modal" },
+        react.exports.createElement(ModalContent, null,
+            react.exports.createElement(Close, { id: "options-close" }, "\u00D7"),
+            react.exports.createElement(Content, null))));
+};
+
 /** Contains all styling for the tab component. */
 const StyledTabItem = styled.li `
   margin-left: 0;
@@ -10320,6 +10381,7 @@ const List = styled.ul `
 `;
 const StyledDropdown = styled.div `
   display: none;
+  flex-direction: column;
   z-index: 1;
   top: 3.4rem;
   background-color: white;
@@ -10327,6 +10389,21 @@ const StyledDropdown = styled.div `
   padding: 0;
   position: relative;
   left: -3.75rem;
+`;
+const OptionsWrapper = styled.p `
+  margin: auto;
+`;
+const StyledOptions = styled.button `
+  font-weight: bold;
+  font-size: 1rem;
+  color: white;
+  margin-top: 0px;
+  margin-bottom: 15px;
+  text-align: center;
+  background-color: rgb(102, 102, 102);
+  border: 0px none;
+  border-radius: 999rem;
+  padding: 10px 20px;
 `;
 
 /**
@@ -10349,8 +10426,18 @@ const Input = (props) => {
     const { name } = props;
     const id = name.toLowerCase();
     return (react.exports.createElement(UPCProvider, { className: "upc-provider" },
-        react.exports.createElement(StyledInput, { id: `upc-${id}`, type: "text", maxLength: 2, size: 1 }),
+        react.exports.createElement(StyledInput, { id: `upc-${id}`, type: "text", maxLength: 2, size: 3 }),
         react.exports.createElement(Name, { id: id }, name)));
+};
+
+/**
+ * Options component.
+ *
+ * @returns {JSX.Element} The options component.
+ */
+const Options = () => {
+    return (react.exports.createElement(OptionsWrapper, null,
+        react.exports.createElement(StyledOptions, { id: "options-btn" }, "Options")));
 };
 
 /**
@@ -10360,7 +10447,8 @@ const Input = (props) => {
  */
 const Dropdown = () => {
     return (react.exports.createElement(StyledDropdown, { className: "upc-dropdown" },
-        react.exports.createElement(List, { className: "upc-ul" }, upcs.map((input) => (react.exports.createElement(Input, { key: input, name: input }))))));
+        react.exports.createElement(List, { className: "upc-ul" }, upcs.map((input) => (react.exports.createElement(Input, { key: input, name: input })))),
+        react.exports.createElement(Options, null)));
 };
 
 /**
@@ -10436,6 +10524,29 @@ const getUPCMap = () => {
 };
 
 /**
+ * Set up the modal content and its event listeners.
+ *
+ * @returns {void}
+ */
+const setupModal = () => {
+    const optModal = document.querySelector('#options-modal');
+    const optButton = document.querySelector('#options-btn');
+    const optClose = document.querySelector('#options-close');
+    /** Controls the visibility of the modal by turning it on. */
+    optButton.addEventListener('click', () => {
+        optModal.style.display = 'block';
+    });
+    /** Controls the visibility of the modal by turning it off. */
+    optClose.addEventListener('click', () => {
+        optModal.style.display = 'none';
+    });
+    document.onclick = (e) => {
+        if (e.target == optModal)
+            optModal.style.display = 'none';
+    };
+};
+
+/**
  *  Gets the UPC map by constructing it from
  *  the rate element image src attribute.
  *
@@ -10489,7 +10600,7 @@ const setInnerText = (rate, value) => {
 /**
  * The element to observe for changes to the total rates.
  */
-const elToObserve = '.uk-width-2-10';
+const elToObserve = '.main-container';
 /**
  * Mutation observer configuration.
  */
@@ -10528,6 +10639,44 @@ const collectMutateRates = () => {
 };
 
 /**
+ * Sets the options for the residential property.
+ *
+ * @returns {void}
+ */
+const setupResidential = () => {
+    const input = document.querySelector('#options-residential');
+    getResidential().then((residential) => {
+        input.checked = residential;
+        if (residential) {
+            const checkbox = document.querySelector('#qa-residential-checkbox');
+            checkbox.click();
+        }
+    });
+    input.addEventListener('change', () => {
+        setResidential(input.checked);
+    });
+};
+/**
+ * Get the residential default configuration from
+ * the GreaseMonkey API.
+ *
+ * @returns {Promise<boolean>}
+ */
+const getResidential = () => {
+    return GM.getValue('residential', false);
+};
+/**
+ * Set the residential default configuration with
+ * the GreaseMonkey API.
+ *
+ * @param {boolean} residential
+ * @returns {void}
+ */
+const setResidential = (value) => {
+    GM.setValue('residential', value);
+};
+
+/**
  * Click event for UPC button that puts it
  * into view on click, otherwise it is hidden.
  */
@@ -10563,6 +10712,16 @@ const Inject = () => {
      * Render UPC tab.
      */
     ReactDOM.render(React.createElement(Tab, null), document.querySelector('#qa-upc-tab'));
+    const appContainer = document.querySelector('#app-container');
+    appContainer.insertAdjacentHTML('afterend', '<div id="modal-root"></div>');
+    /**
+     * Render modal.
+     */
+    ReactDOM.render(React.createElement(Modal, null), document.querySelector('#modal-root'));
+    // Set up modal.
+    setupModal();
+    // Set up residential.
+    setupResidential();
     /**
      * Add click handler to UPC tab.
      */
