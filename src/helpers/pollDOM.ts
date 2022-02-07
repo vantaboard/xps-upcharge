@@ -1,20 +1,34 @@
-import Inject from './inject';
-import { elToObserve } from './mutation';
+import { injectRate, injectResidential } from './inject';
+import { elToObserve, residentialQuery } from './mutation';
 
 /**
- * Polls the DOM to see if a particular element exists or not.
+ * Polls the DOM to see if a rate element exists or not.
  *
  * @returns {void}
  */
-export const pollDOM: () => void = (): void => {
-  let el = document.querySelector(elToObserve);
+export const pollResidentialDOM: () => void = (): void => {
+  let el = document.querySelector(residentialQuery);
 
   if (el) {
-    Inject();
+    injectResidential();
   } else {
-    el = document.querySelector(elToObserve);
-    setTimeout(pollDOM, 300);
+    el = document.querySelector(residentialQuery);
+    setTimeout(pollResidentialDOM, 300);
   }
 };
 
-export default pollDOM;
+/**
+ * Polls the DOM to see if a rate element exists or not.
+ *
+ * @returns {void}
+ */
+export const pollRateDOM: () => void = (): void => {
+  let el = document.querySelector(elToObserve);
+
+  if (el) {
+    injectRate();
+  } else {
+    el = document.querySelector(elToObserve);
+    setTimeout(pollRateDOM, 300);
+  }
+};
