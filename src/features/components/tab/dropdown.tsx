@@ -3,7 +3,12 @@ import { upcs } from '../../../data/upcs';
 import { List, StyledDropdown } from '../../../styles/tab';
 import Input from './input';
 
-const Dropdown: () => JSX.Element = () => {
+/**
+ * Dropdown component.
+ *
+ * @returns {JSX.Element} The dropdown component.
+ */
+const Dropdown: () => JSX.Element = (): JSX.Element => {
   return (
     <StyledDropdown className="upc-dropdown">
       <List className="upc-ul">

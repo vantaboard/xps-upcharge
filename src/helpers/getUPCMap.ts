@@ -1,6 +1,14 @@
 import { upcs } from '../data/upcs';
 
-export const getUPCMap: () => Map<string, HTMLInputElement> = () => {
+/**
+ * Gets the UPC map by constructing it from the UPC data.
+ *
+ * @returns {Map<string, HTMLInputElement>}
+ */
+export const getUPCMap: () => Map<string, HTMLInputElement> = (): Map<
+  string,
+  HTMLInputElement
+> => {
   const upcMap: Map<string, HTMLInputElement> = new Map();
 
   upcs.forEach((upc) => {

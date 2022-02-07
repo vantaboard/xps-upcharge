@@ -1,3 +1,9 @@
+/**
+ *  Gets the UPC map by constructing it from
+ *  the rate element image src attribute.
+ *
+ *  @param {HTMLElement} rate
+ */
 export const getProvider: (rate: HTMLElement) => string = (
   rate: HTMLElement
 ) => {
