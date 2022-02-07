@@ -8483,7 +8483,7 @@ function checkDCE() {
 
 var ReactDOM = reactDom.exports;
 
-const upcs = ["UPS", "USPS", "FedEx", "DHL"];
+const upcs = ['UPS', 'USPS', 'FedEx', 'DHL'];
 
 var reactIs$2 = {exports: {}};
 
@@ -10287,8 +10287,8 @@ const UPCProvider = styled.li `
 `;
 const ButtonDropdownWrapper = styled.div `
   display: flex;
-  margin-top: .4em;
-  flex-direction: row
+  margin-top: 0.4em;
+  flex-direction: row;
 `;
 const StyledButton = styled.button `
   border: 0;
@@ -10297,15 +10297,15 @@ const StyledButton = styled.button `
   margin-right: 4px;
   height: 100%;
   cursor: pointer;
-  -webkit-transition: color .5s ease-in;
-  -moz-transition: color .5s ease-in;
-  -o-transition: color .5s ease-in;
+  -webkit-transition: color 0.5s ease-in;
+  -moz-transition: color 0.5s ease-in;
+  -o-transition: color 0.5s ease-in;
 
   hover & {
     color: #d9d9d9;
-    -webkit-transition: color .5s ease-in;
-    -moz-transition: color .5s ease-in;
-    -o-transition: color .5s ease-in;
+    -webkit-transition: color 0.5s ease-in;
+    -moz-transition: color 0.5s ease-in;
+    -o-transition: color 0.5s ease-in;
   }
 `;
 const List = styled.ul `
@@ -10338,7 +10338,7 @@ const Input = (props) => {
 
 const Dropdown = () => {
     return (react.exports.createElement(StyledDropdown, { className: "upc-dropdown" },
-        react.exports.createElement(List, { className: "upc-ul" }, upcs.map((input) => react.exports.createElement(Input, { name: input })))));
+        react.exports.createElement(List, { className: "upc-ul" }, upcs.map((input) => (react.exports.createElement(Input, { key: input, name: input }))))));
 };
 
 const Tab = () => {
@@ -10349,9 +10349,9 @@ const Tab = () => {
 };
 
 const DocumentClickHandler = (dropdown) => {
-    let upcTab = document.querySelector('#qa-upc-tab');
-    let classNames = [];
-    let ids = [];
+    const upcTab = document.querySelector('#qa-upc-tab');
+    const classNames = [];
+    const ids = [];
     for (const node of upcTab.querySelectorAll('*')) {
         if (node.className)
             classNames.push(node.className);
@@ -10377,13 +10377,8 @@ const getUPCMap = () => {
 };
 
 const getProvider = (rate) => {
-    let img = rate.parentElement
-        .parentElement
-        ?.getElementsByTagName('img')[0] ||
-        rate.parentElement
-            .parentElement
-            .parentElement
-            ?.getElementsByTagName('img')[0];
+    const img = rate.parentElement.parentElement?.getElementsByTagName('img')[0] ||
+        rate.parentElement.parentElement.parentElement?.getElementsByTagName('img')[0];
     const imgSrc = img.getAttribute('src');
     return imgSrc.match(/\/([a-zA-Z]*?)\./)[1];
 };
@@ -10411,7 +10406,7 @@ const config = {
     subtree: true,
     childList: true,
 };
-const observer = new MutationObserver((mutations) => {
+const observer = new MutationObserver(() => {
     observer.disconnect();
     collectMutateRates();
     observer.observe(document.querySelector(elToObserve), config);
@@ -10439,10 +10434,13 @@ const ClickHandler = (dropdown) => {
 
 const Inject = () => {
     document.querySelector('#qa-quick-quote-toggle').remove();
-    const addressTab = document.querySelector('#qa-address-book-tab').nextSibling;
+    const addressTab = document.querySelector('#qa-address-book-tab')
+        .nextSibling;
     addressTab.insertAdjacentHTML('afterend', '<div id="qa-upc-tab"></div>');
     ReactDOM.render(React.createElement(Tab, null), document.querySelector('#qa-upc-tab'));
-    document.querySelector('.upc-button').addEventListener('click', ClickHandler(document.querySelector('.upc-dropdown')));
+    document
+        .querySelector('.upc-button')
+        .addEventListener('click', ClickHandler(document.querySelector('.upc-dropdown')));
     document.onclick = DocumentClickHandler(document.querySelector('.upc-dropdown'));
     const upcMap = getUPCMap();
     const values = upcs.map((upc) => GM.getValue(upc.toLowerCase(), 0));
