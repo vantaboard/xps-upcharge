@@ -35,7 +35,7 @@ export const Inject: () => void = () => {
   values.forEach((value, index) => {
     value.then((value) => {
       const upcl = upcs[index].toLowerCase();
-      upcMap[upcl].value = value as string;
+      upcMap[upcl].value = value as unknown as string;
     });
   });
 
