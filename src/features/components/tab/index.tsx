@@ -3,12 +3,12 @@ import { ButtonDropdownWrapper, StyledTabItem } from '../../../styles/tab';
 import Button from './button';
 import Dropdown from './dropdown';
 
-const Tab = () => {
+const Tab: () => JSX.Element = () => {
   return (
     <StyledTabItem id="qa-upc-tab">
       <ButtonDropdownWrapper className="upc-button-wrapper">
-          <Button />
-          <Dropdown />
+        <Button />
+        <Dropdown />
       </ButtonDropdownWrapper>
     </StyledTabItem>
   );

@@ -1,16 +1,17 @@
 import * as React from 'react';
+import { upcs } from '../../../data/upcs';
 import { List, StyledDropdown } from '../../../styles/tab';
 import Input from './input';
-import { upcs } from '../../../data/upcs';
 
 const Dropdown: () => JSX.Element = () => {
   return (
-        <StyledDropdown className="upc-dropdown">
-          <List className="upc-ul">
-            {upcs.map((input: string) => <Input name={input} />)}
-          </List>
-        </StyledDropdown>
-
+    <StyledDropdown className="upc-dropdown">
+      <List className="upc-ul">
+        {upcs.map((input: string) => (
+          <Input key={input} name={input} />
+        ))}
+      </List>
+    </StyledDropdown>
   );
 };
 
