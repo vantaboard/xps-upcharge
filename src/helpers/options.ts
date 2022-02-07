@@ -25,6 +25,12 @@ export const setupResidential = (): void => {
   getResidential().then(checkResidential);
 };
 
+/**
+ * Checks the residential property and sets the checkbox.
+ *
+ * @param {boolean} residential
+ * @returns {void}
+ */
 const checkResidential: (residential: boolean) => void = (
   residential: boolean
 ) => {
