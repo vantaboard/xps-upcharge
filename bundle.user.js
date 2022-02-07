@@ -1,17 +1,19 @@
 // ==UserScript==
-// @name      xpsupcharge
-// @namespace https://brightentompkins.com/
-// @license   MIT
-// @author    blackboardd <86866786+blackboardd@users.noreply.github.com>
-// @source    https://github.com/blackboardd/xps-upcharge
-// @require   https://unpkg.com/react@17/umd/react.development.js
-// @require   https://unpkg.com/react-dom@17/umd/react-dom.development.js
-// @icon      https://xpsshipper.com/ec/static/images/client/xps/xps-favicon.png
-// @match     https://xpsshipper.com/*
-// @version   2.0.1
-// @homepage  https://github.com/blackboardd/xps-upcharge#readme
-// @grant     GM.setValue
-// @grant     GM.getValue
+// @name        xpsupcharge
+// @namespace   https://brightentompkins.com/
+// @license     MIT
+// @author      blackboardd <86866786+blackboardd@users.noreply.github.com>
+// @source      https://github.com/blackboardd/xps-upcharge
+// @require     https://unpkg.com/react@17/umd/react.development.js
+// @require     https://unpkg.com/react-dom@17/umd/react-dom.development.js
+// @updateURL   https://github.com/blackboardd/xps-upcharge/raw/release/bundle.user.js
+// @downloadURL https://github.com/blackboardd/xps-upcharge/raw/release/bundle.user.js
+// @icon        https://xpsshipper.com/ec/static/images/client/xps/xps-favicon.png
+// @match       https://xpsshipper.com/*
+// @version     2.0.2
+// @homepage    https://github.com/blackboardd/xps-upcharge#readme
+// @grant       GM.setValue
+// @grant       GM.getValue
 // ==/UserScript==
 
 /*
