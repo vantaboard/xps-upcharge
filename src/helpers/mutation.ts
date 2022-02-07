@@ -29,7 +29,9 @@ export const observer: MutationObserver = new MutationObserver(() => {
  * @param {HTMLElement} rate
  * @returns {void}
  */
-export const mutateRate: (rate: HTMLElement) => void = (rate: HTMLElement) => {
+export const mutateRate: (rate: HTMLElement) => void = (
+  rate: HTMLElement
+): void => {
   if (isNumber(rate)) setInnerText(rate, getValue(rate));
 };
 
@@ -38,7 +40,7 @@ export const mutateRate: (rate: HTMLElement) => void = (rate: HTMLElement) => {
  *
  * @returns {void}
  */
-export const collectMutateRates: () => void = () => {
+export const collectMutateRates: () => void = (): void => {
   for (const rate of document.querySelectorAll('#total-rate')) {
     mutateRate(rate as HTMLElement);
   }

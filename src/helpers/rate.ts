@@ -7,7 +7,9 @@ import { getProvider } from './providers';
  * @param {HTMLElement} rate
  * @returns {boolean}
  */
-export const isNumber: (rate: HTMLElement) => boolean = (rate: HTMLElement) => {
+export const isNumber: (rate: HTMLElement) => boolean = (
+  rate: HTMLElement
+): boolean => {
   return Boolean(rate.innerText.match(/[0-9]/));
 };
 
@@ -18,7 +20,9 @@ export const isNumber: (rate: HTMLElement) => boolean = (rate: HTMLElement) => {
  * @param {HTMLElement} rate
  * @returns {number}
  */
-export const getValue: (rate: HTMLElement) => number = (rate: HTMLElement) => {
+export const getValue: (rate: HTMLElement) => number = (
+  rate: HTMLElement
+): number => {
   if (!rate.getAttribute('value')) {
     const total = Number(rate.innerText.replace('$', ''));
     rate.setAttribute('value', String(total));
@@ -38,7 +42,7 @@ export const getValue: (rate: HTMLElement) => number = (rate: HTMLElement) => {
 export const setInnerText: (rate: HTMLElement, value: number) => void = (
   rate: HTMLElement,
   value: number
-) => {
+): void => {
   const upcMap = getUPCMap();
 
   rate.innerText = `

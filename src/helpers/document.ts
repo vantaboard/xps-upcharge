@@ -7,7 +7,9 @@
  */
 export const DocumentClickHandler: (
   dropdown: HTMLElement
-) => (e: MouseEvent) => void = (dropdown: HTMLElement) => {
+) => (e: MouseEvent) => void = (
+  dropdown: HTMLElement
+): ((e: MouseEvent) => void) => {
   /**
    * Element for the dropdown menu.
    */

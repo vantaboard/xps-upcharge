@@ -5,7 +5,10 @@ import { upcs } from '../data/upcs';
  *
  * @returns {Map<string, HTMLInputElement>}
  */
-export const getUPCMap: () => Map<string, HTMLInputElement> = () => {
+export const getUPCMap: () => Map<string, HTMLInputElement> = (): Map<
+  string,
+  HTMLInputElement
+> => {
   const upcMap: Map<string, HTMLInputElement> = new Map();
 
   upcs.forEach((upc) => {

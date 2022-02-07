@@ -1,4 +1,4 @@
-// Contains all styling for the tab component.
+/** Contains all styling for the tab component. */
 
 import styled from 'styled-components';
 

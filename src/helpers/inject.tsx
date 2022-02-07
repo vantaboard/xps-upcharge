@@ -14,7 +14,7 @@ import { ClickHandler } from './upcButton';
  *
  * @returns {void}
  */
-export const Inject: () => void = () => {
+export const Inject: () => void = (): void => {
   /**
    * Address tab to insert html for UPC tab.
    */

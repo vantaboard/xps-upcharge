@@ -6,7 +6,7 @@ import { elToObserve } from './mutation';
  *
  * @returns {void}
  */
-export const pollDOM: () => void = () => {
+export const pollDOM: () => void = (): void => {
   let el = document.querySelector(elToObserve);
 
   if (el) {
