@@ -5,7 +5,7 @@
  *
  * @returns {(e: MouseEvent) => void}
  */
-export const DocumentClickHandler: (
+export const documentClickHandler: (
   dropdown: HTMLElement
 ) => (e: MouseEvent) => void = (
   dropdown: HTMLElement
