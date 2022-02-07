@@ -3,7 +3,6 @@ import commonjs from '@rollup/plugin-commonjs';
 import nodeResolve from '@rollup/plugin-node-resolve';
 import replace from '@rollup/plugin-replace';
 import typescriptPlugin from '@rollup/plugin-typescript';
-import livereload from 'rollup-plugin-livereload';
 import peerDepsExternal from "rollup-plugin-peer-deps-external";
 import metablock from 'rollup-plugin-userscript-metablock';
 import typescript from 'typescript';
@@ -29,10 +28,6 @@ export default {
   },
   plugins: [
     peerDepsExternal(),
-    livereload({
-      watch: 'dist',
-      port: 35729
-    }),
     replace({
       'process.env.NODE_ENV': JSON.stringify('production'),
       ENVIRONMENT: JSON.stringify('production'),
