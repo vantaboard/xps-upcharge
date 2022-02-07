@@ -3,7 +3,7 @@ import { getValue, isNumber, setInnerText } from './rate';
 /**
  * The element to observe for changes to the total rates.
  */
-export const elToObserve = '.uk-width-2-10';
+export const elToObserve = '.main-container';
 
 /**
  * Mutation observer configuration.
