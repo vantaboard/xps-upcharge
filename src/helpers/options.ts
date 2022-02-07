@@ -1,3 +1,5 @@
+import { residentialQuery } from './mutation';
+
 /**
  * Sets the options for the residential property.
  *
@@ -8,21 +10,34 @@ export const setupResidential = (): void => {
     '#options-residential'
   ) as HTMLInputElement;
 
-  getResidential().then((residential) => {
-    input.checked = residential;
-
-    if (residential) {
-      const checkbox = document.querySelector(
-        '#qa-residential-checkbox'
-      ) as HTMLInputElement;
-
-      checkbox.click();
-    }
-  });
-
   input.addEventListener('change', () => {
     setResidential(input.checked);
   });
+
+  const newShipment = document.querySelector(
+    '#qa-new-shipment-btn'
+  ) as HTMLInputElement;
+
+  newShipment.addEventListener('click', () => {
+    getResidential().then(checkResidential);
+  });
+
+  getResidential().then(checkResidential);
+};
+
+const checkResidential: (residential: boolean) => void = (
+  residential: boolean
+) => {
+  const input = document.querySelector(
+    '#options-residential'
+  ) as HTMLInputElement;
+
+  const checkbox = document.querySelector(residentialQuery) as HTMLInputElement;
+
+  input.checked = residential;
+  setInterval(() => {
+    checkbox.checked = residential;
+  }, 2000);
 };
 
 /**
@@ -32,7 +47,7 @@ export const setupResidential = (): void => {
  * @returns {Promise<boolean>}
  */
 export const getResidential: () => Promise<boolean> = (): Promise<boolean> => {
-  return GM.getValue('residential', false);
+  return GM.getValue('residential', true);
 };
 
 /**
