@@ -10,7 +10,7 @@
 // @downloadURL https://github.com/blackboardd/xps-upcharge/raw/release/bundle.user.js
 // @icon        https://xpsshipper.com/ec/static/images/client/xps/xps-favicon.png
 // @match       https://xpsshipper.com/*
-// @version     2.1.1
+// @version     2.1.2
 // @homepage    https://github.com/blackboardd/xps-upcharge#readme
 // @grant       GM.setValue
 // @grant       GM.getValue
@@ -10470,7 +10470,7 @@ const Tab = () => {
  *
  * @returns {(e: MouseEvent) => void}
  */
-const DocumentClickHandler = (dropdown) => {
+const documentClickHandler = (dropdown) => {
     /**
      * Element for the dropdown menu.
      */
@@ -10547,6 +10547,44 @@ const setupModal = () => {
 };
 
 /**
+ * Sets the options for the residential property.
+ *
+ * @returns {void}
+ */
+const setupResidential = () => {
+    const input = document.querySelector('#options-residential');
+    getResidential().then((residential) => {
+        input.checked = residential;
+        if (residential) {
+            const checkbox = document.querySelector('#qa-residential-checkbox');
+            checkbox.click();
+        }
+    });
+    input.addEventListener('change', () => {
+        setResidential(input.checked);
+    });
+};
+/**
+ * Get the residential default configuration from
+ * the GreaseMonkey API.
+ *
+ * @returns {Promise<boolean>}
+ */
+const getResidential = () => {
+    return GM.getValue('residential', false);
+};
+/**
+ * Set the residential default configuration with
+ * the GreaseMonkey API.
+ *
+ * @param {boolean} residential
+ * @returns {void}
+ */
+const setResidential = (value) => {
+    GM.setValue('residential', value);
+};
+
+/**
  *  Gets the UPC map by constructing it from
  *  the rate element image src attribute.
  *
@@ -10602,20 +10640,38 @@ const setInnerText = (rate, value) => {
  */
 const elToObserve = '.main-container';
 /**
+ * The element to observe for changes to the residential checkbox.
+ */
+const residentialQuery = '#qa-residential-checkbox';
+/**
  * Mutation observer configuration.
  */
-const config = {
+const residentialConfig = {
     characterData: true,
     subtree: true,
     childList: true,
 };
 /**
+ * Mutation observer configuration.
+ */
+const rateConfig = {
+    characterData: true,
+    subtree: true,
+    childList: true,
+};
+/**
+ * Mutation observer for the residential checkbox.
+ */
+const residentialObserver = new MutationObserver(() => {
+    setupResidential();
+});
+/**
  * Mutation observer for the total rates.
  */
-const observer = new MutationObserver(() => {
-    observer.disconnect();
+const rateObserver = new MutationObserver(() => {
+    rateObserver.disconnect();
     collectMutateRates();
-    observer.observe(document.querySelector(elToObserve), config);
+    rateObserver.observe(document.querySelector(elToObserve), rateConfig);
 });
 /**
  * Mutates the rates based on the upcharge percentages in the UPC dropdown.
@@ -10639,48 +10695,10 @@ const collectMutateRates = () => {
 };
 
 /**
- * Sets the options for the residential property.
- *
- * @returns {void}
- */
-const setupResidential = () => {
-    const input = document.querySelector('#options-residential');
-    getResidential().then((residential) => {
-        input.checked = residential;
-        if (residential) {
-            const checkbox = document.querySelector('#qa-residential-checkbox');
-            checkbox.click();
-        }
-    });
-    input.addEventListener('change', () => {
-        setResidential(input.checked);
-    });
-};
-/**
- * Get the residential default configuration from
- * the GreaseMonkey API.
- *
- * @returns {Promise<boolean>}
- */
-const getResidential = () => {
-    return GM.getValue('residential', false);
-};
-/**
- * Set the residential default configuration with
- * the GreaseMonkey API.
- *
- * @param {boolean} residential
- * @returns {void}
- */
-const setResidential = (value) => {
-    GM.setValue('residential', value);
-};
-
-/**
  * Click event for UPC button that puts it
  * into view on click, otherwise it is hidden.
  */
-const ClickHandler = (dropdown) => {
+const clickHandler = (dropdown) => {
     return () => {
         if (dropdown.style.display === '') {
             dropdown.style.display = 'flex';
@@ -10693,12 +10711,12 @@ const ClickHandler = (dropdown) => {
 
 /**
  * This is the main entry point for the userscript.
- * It will be called when the page is loaded.
- * It will also be called when the page is refreshed.
+ * It will be called when the page with a residential checkbox
+ * is loaded. It will also be called when the page is refreshed.
  *
  * @returns {void}
  */
-const Inject = () => {
+const injectRate = () => {
     /**
      * Address tab to insert html for UPC tab.
      */
@@ -10720,18 +10738,16 @@ const Inject = () => {
     ReactDOM.render(React.createElement(Modal, null), document.querySelector('#modal-root'));
     // Set up modal.
     setupModal();
-    // Set up residential.
-    setupResidential();
     /**
      * Add click handler to UPC tab.
      */
     document
         .querySelector('.upc-button')
-        .addEventListener('click', ClickHandler(document.querySelector('.upc-dropdown')));
+        .addEventListener('click', clickHandler(document.querySelector('.upc-dropdown')));
     /**
      * Add click handler to document to watch for clicking off UPC dropdown.
      */
-    document.onclick = DocumentClickHandler(document.querySelector('.upc-dropdown'));
+    document.onclick = documentClickHandler(document.querySelector('.upc-dropdown'));
     /**
      * Map of UPCs to their corresponding html input elements.
      */
@@ -10764,22 +10780,53 @@ const Inject = () => {
      * Begin observing the page for mutations and
      * change the rate based on those mutations.
      */
-    observer.observe(document.querySelector(elToObserve), config);
+    rateObserver.observe(document.querySelector(elToObserve), rateConfig);
 };
-
 /**
- * Polls the DOM to see if a particular element exists or not.
+ * This is the main entry point for the userscript.
+ * It will be called when any page with rates is loaded.
+ * It will also be called when the page is refreshed.
  *
  * @returns {void}
  */
-const pollDOM = () => {
+const injectResidential = () => {
+    // Set up residential.
+    setupResidential();
+    /**
+     * Begin observing the page for mutations of the residential checkbox
+     * and setup the checkbox based on those mutations.
+     */
+    residentialObserver.observe(document.querySelector(residentialQuery), residentialConfig);
+};
+
+/**
+ * Polls the DOM to see if a rate element exists or not.
+ *
+ * @returns {void}
+ */
+const pollResidentialDOM = () => {
+    let el = document.querySelector(residentialQuery);
+    if (el) {
+        injectResidential();
+    }
+    else {
+        el = document.querySelector(residentialQuery);
+        setTimeout(pollResidentialDOM, 300);
+    }
+};
+/**
+ * Polls the DOM to see if a rate element exists or not.
+ *
+ * @returns {void}
+ */
+const pollRateDOM = () => {
     let el = document.querySelector(elToObserve);
     if (el) {
-        Inject();
+        injectRate();
     }
     else {
         el = document.querySelector(elToObserve);
-        setTimeout(pollDOM, 300);
+        setTimeout(pollRateDOM, 300);
     }
 };
 
@@ -10789,5 +10836,6 @@ const pollDOM = () => {
  * is ready to be injected.
  */
 
-pollDOM();
+pollRateDOM();
+pollResidentialDOM();
 //# sourceMappingURL=bundle.user.js.map
