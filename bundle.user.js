@@ -10553,16 +10553,28 @@ const setupModal = () => {
  */
 const setupResidential = () => {
     const input = document.querySelector('#options-residential');
-    getResidential().then((residential) => {
-        input.checked = residential;
-        if (residential) {
-            const checkbox = document.querySelector('#qa-residential-checkbox');
-            checkbox.click();
-        }
-    });
     input.addEventListener('change', () => {
         setResidential(input.checked);
     });
+    const newShipment = document.querySelector('#qa-new-shipment-btn');
+    newShipment.addEventListener('click', () => {
+        getResidential().then(checkResidential);
+    });
+    getResidential().then(checkResidential);
+};
+/**
+ * Checks the residential property and sets the checkbox.
+ *
+ * @param {boolean} residential
+ * @returns {void}
+ */
+const checkResidential = (residential) => {
+    const input = document.querySelector('#options-residential');
+    const checkbox = document.querySelector(residentialQuery);
+    input.checked = residential;
+    setInterval(() => {
+        checkbox.checked = residential;
+    }, 2000);
 };
 /**
  * Get the residential default configuration from
@@ -10571,7 +10583,7 @@ const setupResidential = () => {
  * @returns {Promise<boolean>}
  */
 const getResidential = () => {
-    return GM.getValue('residential', false);
+    return GM.getValue('residential', true);
 };
 /**
  * Set the residential default configuration with
