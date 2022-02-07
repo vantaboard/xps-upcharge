@@ -8,6 +8,8 @@
     "https://unpkg.com/react@17/umd/react.development.js",
     "https://unpkg.com/react-dom@17/umd/react-dom.development.js"
   ],
+  "updateURL": "https://github.com/blackboardd/xps-upcharge/raw/release/bundle.user.js",
+  "downloadURL": "https://github.com/blackboardd/xps-upcharge/raw/release/bundle.user.js",
   "icon": "https://xpsshipper.com/ec/static/images/client/xps/xps-favicon.png",
   "match": ["https://xpsshipper.com/*"],
   "grant": ["GM.setValue", "GM.getValue"],
