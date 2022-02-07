@@ -22,7 +22,7 @@ const Input: (props: IInputProps) => JSX.Element = (
 
   return (
     <UPCProvider className="upc-provider">
-      <StyledInput id={`upc-${id}`} type="text" maxLength={2} size={1} />
+      <StyledInput id={`upc-${id}`} type="text" maxLength={2} size={3} />
       <Name id={id}>{name}</Name>
     </UPCProvider>
   );

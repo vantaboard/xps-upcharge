@@ -53,6 +53,7 @@ export const List = styled.ul`
 
 export const StyledDropdown = styled.div`
   display: none;
+  flex-direction: column;
   z-index: 1;
   top: 3.4rem;
   background-color: white;
@@ -60,4 +61,21 @@ export const StyledDropdown = styled.div`
   padding: 0;
   position: relative;
   left: -3.75rem;
+`;
+
+export const OptionsWrapper = styled.p`
+  margin: auto;
+`;
+
+export const StyledOptions = styled.button`
+  font-weight: bold;
+  font-size: 1rem;
+  color: white;
+  margin-top: 0px;
+  margin-bottom: 15px;
+  text-align: center;
+  background-color: rgb(102, 102, 102);
+  border: 0px none;
+  border-radius: 999rem;
+  padding: 10px 20px;
 `;
