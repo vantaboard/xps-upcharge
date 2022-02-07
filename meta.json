@@ -1,0 +1,22 @@
+{
+    "name": "XPS Upcharge",
+    "namespace": "https://brightentompkins.com/",
+    "license": "MIT",
+    "author": [
+        "blackboardd <86866786+blackboardd@users.noreply.github.com>"
+    ],
+    "source": "https://github.com/blackboardd/xps-upcharge",
+    "require": [
+        "https://unpkg.com/react@17/umd/react.development.js",
+        "https://unpkg.com/react-dom@17/umd/react-dom.development.js"
+    ],
+    "icon": "https://xpsshipper.com/ec/static/images/client/xps/xps-favicon.png",
+    "match": [
+        "https://xpsshipper.com/*"
+    ],
+    "grant": [
+        "GM.setValue",
+        "GM.getValue"
+    ],
+    "run_at": "document_end"
+}
