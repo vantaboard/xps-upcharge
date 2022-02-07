@@ -8,10 +8,12 @@ export const setupModal = (): void => {
   const optButton = document.querySelector('#options-btn') as HTMLElement;
   const optClose = document.querySelector('#options-close') as HTMLElement;
 
+  /** Controls the visibility of the modal by turning it on. */
   optButton.addEventListener('click', () => {
     optModal.style.display = 'block';
   });
 
+  /** Controls the visibility of the modal by turning it off. */
   optClose.addEventListener('click', () => {
     optModal.style.display = 'none';
   });

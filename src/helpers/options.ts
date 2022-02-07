@@ -1,3 +1,8 @@
+/**
+ * Sets the options for the residential property.
+ *
+ * @returns {void}
+ */
 export const setupResidential = (): void => {
   const input = document.querySelector(
     '#options-residential'
@@ -20,10 +25,25 @@ export const setupResidential = (): void => {
   });
 };
 
-export const getResidential: () => Promise<boolean> = () => {
+/**
+ * Get the residential default configuration from
+ * the GreaseMonkey API.
+ *
+ * @returns {Promise<boolean>}
+ */
+export const getResidential: () => Promise<boolean> = (): Promise<boolean> => {
   return GM.getValue('residential', false);
 };
 
-export const setResidential: (value: boolean) => void = (value: boolean) => {
+/**
+ * Set the residential default configuration with
+ * the GreaseMonkey API.
+ *
+ * @param {boolean} residential
+ * @returns {void}
+ */
+export const setResidential: (value: boolean) => void = (
+  value: boolean
+): void => {
   GM.setValue('residential', value);
 };
