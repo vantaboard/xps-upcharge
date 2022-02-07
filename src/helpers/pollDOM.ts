@@ -1,6 +1,6 @@
 import Inject from './inject';
 
-export const pollDOM = () => {
+export const pollDOM: () => void = () => {
   let el = document.querySelector('.uk-width-2-10');
 
   if (el) {

@@ -8,7 +8,7 @@ export const config = {
   childList: true,
 };
 
-export const observer = new MutationObserver((mutations: MutationRecord[]) => {
+export const observer: MutationObserver = new MutationObserver(() => {
   observer.disconnect();
   collectMutateRates();
   observer.observe(document.querySelector(elToObserve), config);

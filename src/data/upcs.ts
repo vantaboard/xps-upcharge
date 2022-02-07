@@ -1,1 +1,1 @@
-export const upcs = ["UPS", "USPS", "FedEx", "DHL"];
+export const upcs = ['UPS', 'USPS', 'FedEx', 'DHL'];

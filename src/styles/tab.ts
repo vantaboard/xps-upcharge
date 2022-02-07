@@ -21,8 +21,8 @@ export const UPCProvider = styled.li`
 
 export const ButtonDropdownWrapper = styled.div`
   display: flex;
-  margin-top: .4em;
-  flex-direction: row
+  margin-top: 0.4em;
+  flex-direction: row;
 `;
 
 export const StyledButton = styled.button`
@@ -32,15 +32,15 @@ export const StyledButton = styled.button`
   margin-right: 4px;
   height: 100%;
   cursor: pointer;
-  -webkit-transition: color .5s ease-in;
-  -moz-transition: color .5s ease-in;
-  -o-transition: color .5s ease-in;
+  -webkit-transition: color 0.5s ease-in;
+  -moz-transition: color 0.5s ease-in;
+  -o-transition: color 0.5s ease-in;
 
   hover & {
     color: #d9d9d9;
-    -webkit-transition: color .5s ease-in;
-    -moz-transition: color .5s ease-in;
-    -o-transition: color .5s ease-in;
+    -webkit-transition: color 0.5s ease-in;
+    -moz-transition: color 0.5s ease-in;
+    -o-transition: color 0.5s ease-in;
   }
 `;
 
