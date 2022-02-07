@@ -1,10 +1,13 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { upcs } from '../data/upcs';
+import Modal from '../features/components/options/modal';
 import Button from '../features/components/tab';
 import { DocumentClickHandler } from './document';
 import getUPCMap from './getUPCMap';
+import { setupModal } from './modal';
 import { collectMutateRates, config, elToObserve, observer } from './mutation';
+import { setupResidential } from './options';
 import { ClickHandler } from './upcButton';
 
 /**
@@ -30,6 +33,20 @@ export const Inject: () => void = (): void => {
    * Render UPC tab.
    */
   ReactDOM.render(<Button />, document.querySelector('#qa-upc-tab'));
+
+  const appContainer = document.querySelector('#app-container');
+  appContainer.insertAdjacentHTML('afterend', '<div id="modal-root"></div>');
+
+  /**
+   * Render modal.
+   */
+  ReactDOM.render(<Modal />, document.querySelector('#modal-root'));
+
+  // Set up modal.
+  setupModal();
+
+  // Set up residential.
+  setupResidential();
 
   /**
    * Add click handler to UPC tab.
