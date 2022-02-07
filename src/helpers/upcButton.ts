@@ -1,5 +1,6 @@
-export const ClickHandler: (dropdown: HTMLElement) =>
-  () => void = (dropdown: HTMLElement) => {
+export const ClickHandler: (dropdown: HTMLElement) => () => void = (
+  dropdown: HTMLElement
+) => {
   return () => {
     if (dropdown.style.display === '') {
       dropdown.style.display = 'flex';
@@ -7,4 +8,4 @@ export const ClickHandler: (dropdown: HTMLElement) =>
       dropdown.style.display = '';
     }
   };
-}
+};

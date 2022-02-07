@@ -3,7 +3,7 @@ import { Name, StyledInput, UPCProvider } from '../../../styles/tab';
 
 interface IInputProps {
   name: string;
-};
+}
 
 const Input: (props: IInputProps) => JSX.Element = (props: IInputProps) => {
   const { name } = props;

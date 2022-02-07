@@ -4,27 +4,25 @@ import { upcs } from '../data/upcs';
 import Button from '../features/components/tab';
 import { DocumentClickHandler } from './document';
 import getUPCMap from './getUPCMap';
-import { collectMutateRates, config, elToObserve, observer } from "./mutation";
+import { collectMutateRates, config, elToObserve, observer } from './mutation';
 import { ClickHandler } from './upcButton';
 
-export const Inject = () => {
+export const Inject: () => void = () => {
   document.querySelector('#qa-quick-quote-toggle').remove();
 
-  const addressTab = document.querySelector(
-    '#qa-address-book-tab'
-  ).nextSibling as HTMLElement;
+  const addressTab = document.querySelector('#qa-address-book-tab')
+    .nextSibling as HTMLElement;
 
   addressTab.insertAdjacentHTML('afterend', '<div id="qa-upc-tab"></div>');
 
-  ReactDOM.render(
-    <Button />,
-    document.querySelector('#qa-upc-tab')
-  );
+  ReactDOM.render(<Button />, document.querySelector('#qa-upc-tab'));
 
-  document.querySelector('.upc-button').addEventListener(
-    'click', ClickHandler(document.querySelector('.upc-dropdown')
-    )
-  );
+  document
+    .querySelector('.upc-button')
+    .addEventListener(
+      'click',
+      ClickHandler(document.querySelector('.upc-dropdown'))
+    );
 
   document.onclick = DocumentClickHandler(
     document.querySelector('.upc-dropdown')
@@ -48,7 +46,7 @@ export const Inject = () => {
 
       GM.setValue(upcl, upcMap[upcl].value);
     });
-  };
+  }
 
   observer.observe(document.querySelector(elToObserve), config);
 };

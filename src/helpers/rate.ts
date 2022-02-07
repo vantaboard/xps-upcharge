@@ -12,13 +12,15 @@ export const getValue: (rate: HTMLElement) => number = (rate: HTMLElement) => {
   }
 
   return Number(rate.getAttribute('value'));
-}
+};
 
-export const setInnerText: (rate: HTMLElement, value: number) =>
-  void = (rate: HTMLElement, value: number) => {
+export const setInnerText: (rate: HTMLElement, value: number) => void = (
+  rate: HTMLElement,
+  value: number
+) => {
   const upcMap = getUPCMap();
-    
+
   rate.innerText = `
     $${(value + value * (upcMap[getProvider(rate)].value / 100)).toFixed(2)}
   `;
-}
+};

@@ -1,0 +1,10 @@
+**/node_modules/*
+**/build/*
+**/public/*
+config-overrides.js
+**/out/*
+**/dist/*
+**/types/*
+rollup.config.js
+dev.user.js
+server.js
